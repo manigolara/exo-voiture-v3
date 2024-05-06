@@ -12,7 +12,8 @@ var App = {
    * ---------------------------------------------
    */
   states: {
-    selectedCar: null,
+    car: null,
+    cars: [],
   },
   objs: {
     form: null,
@@ -43,38 +44,46 @@ var App = {
     this.data.color = data.color;
     this.data.speed = data.speed;
     // initialize instances that generate dom elements
-    // create a new instance of car
-    this.states.selectedCar = objs.car.create();
+    this.objs.board = objs.board.create(this.els.gameSection, this.states.cars);
     this.objs.form = objs.form.create(this.els.formSection, this.data);
-    // this.objs.preview = objs.preview.create(this.objs.form.els.preview);
-    // this.objs.board = objs.board.create(this.els.game);
+    this.objs.preview = objs.preview.create(this.objs.form.els.preview);
+    // initialize states
+    this.states.car = objs.car.create();
 
     // WHILE TESTING
     this.objs.form.els.type.selectedIndex = 1;
     this.objs.form.els.color.selectedIndex = 1;
     this.objs.form.els.speed.selectedIndex = 1;
-
-    if (this.objs.form.canSubmit()) {
-      this.objs.form.removeSubmitDisabled();
-    }
+    this.objs.form.canSubmit() && this.objs.form.removeSubmitDisabled();
     // END TESTING
 
+    this.states.car = App.getFormValues(this.objs.form, this.path.img); // bind selectedCar with form values
+    this.objs.preview.display(this.states.car); // display current car
+    this.objs.form.canSubmit() && this.objs.form.removeSubmitDisabled(); // enable submit button if all values are provided
     // events
     this.objs.form.els.form.addEventListener("change", () => {
-      // bind selectedCar with form values
-      this.states.selectedCar.type = this.objs.form.getTypeValue();
-      this.states.selectedCar.color = this.objs.form.getColorValue();
-      this.states.selectedCar.colorFilter = this.objs.form.getColorFilterValue();
-      this.states.selectedCar.speed = this.objs.form.getSpeedValue();
-      // enable submit button if all values are provided
-      this.objs.form.canSubmit() && this.objs.form.removeSubmitDisabled();
+      this.states.car = App.getFormValues(this.objs.form, this.path.img); // bind selectedCar with form values
+      this.objs.preview.display(this.states.car); // display current car
+      this.objs.form.canSubmit() && this.objs.form.removeSubmitDisabled(); // enable submit button if all values are provided
     });
 
     this.objs.form.els.submit.addEventListener("click", () => {
+      // add car to the board
+      this.objs.board.addCar(this.states.car);
       // reset form values
       this.objs.form.resetForm();
       // create a new instance of car
-      this.states.selectedCar = objs.car.create();
+      this.states.car = objs.car.create();
+
+      // WHILE TESTING
+      this.objs.form.els.type.selectedIndex = 1;
+      this.objs.form.els.color.selectedIndex = 1;
+      this.objs.form.els.speed.selectedIndex = 1;
+      this.objs.form.canSubmit() && this.objs.form.removeSubmitDisabled();
+      // END TESTING
+
+      this.states.car = App.getFormValues(this.objs.form, this.path.img); // bind selectedCar with form values
+      this.objs.preview.display(this.states.car); // display current car
     });
   },
 };
@@ -83,6 +92,15 @@ var App = {
  * Private functions
  * ---------------------------------------------
  */
+App.getFormValues = function (form, path) {
+  return {
+    type: form.getTypeValue(),
+    color: form.getColorValue(),
+    colorFilter: form.getColorFilterValue(),
+    speed: form.getSpeedValue(),
+    imgPath: path + form.getFilenameValue(),
+  };
+};
 App.createAppEle = function (domEl) {
   // create `form` section element
   var formSection = document.createElement("section");
