@@ -84,6 +84,10 @@ var Form = {
     Form.hideButton(this.els.submit);
     Form.displayButton(this.els.update);
   },
+  hideForm() {
+    this.resetForm();
+    this.els.container.style.display = "none";
+  },
 };
 
 /**

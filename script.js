@@ -22,6 +22,7 @@ var App = {
     appContainer: null,
     formSection: null,
     gameSection: null,
+    podium: null,
   },
   data: {
     type: null,
@@ -38,7 +39,9 @@ var App = {
   run: function ({appId, data, objs}) {
     // generate app dom element
     this.els.appContainer = document.getElementById(appId, data);
-    [this.els.appContainer, this.els.formSection, this.els.gameSection] = App.createAppEle(this.els.appContainer);
+    [this.els.appContainer, this.els.formSection, this.els.gameSection, this.els.podium] = App.createAppEle(
+      this.els.appContainer
+    );
     // store json data
     this.data.type = data.type;
     this.data.color = data.color;
@@ -51,10 +54,10 @@ var App = {
     this.states.car = objs.car.create();
 
     // WHILE TESTING
-    this.objs.form.els.type.selectedIndex = 1;
-    this.objs.form.els.color.selectedIndex = 1;
-    this.objs.form.els.speed.selectedIndex = 1;
-    this.objs.form.canSubmit() && this.objs.form.removeSubmitDisabled();
+    // this.objs.form.els.type.selectedIndex = 1;
+    // this.objs.form.els.color.selectedIndex = 1;
+    // this.objs.form.els.speed.selectedIndex = 1;
+    // this.objs.form.canSubmit() && this.objs.form.removeSubmitDisabled();
     // END TESTING
 
     this.states.car = App.getFormValues(this.objs.form, this.path.img); // bind selectedCar with form values
@@ -64,7 +67,7 @@ var App = {
      * events
      * -----------------------------------------------------------
      */
-    // form on change
+    // form change event
     this.objs.form.els.form.addEventListener("change", () => {
       this.states.car = App.getFormValues(this.objs.form, this.path.img); // bind selectedCar with form values
       this.objs.preview.display(this.states.car); // display current car
@@ -73,7 +76,7 @@ var App = {
 
     var selectedCar = null;
 
-    // form on submit
+    // form submit event
     this.objs.form.els.submit.addEventListener("click", () => {
       // add car to the board
       this.objs.board.addCar(this.states.car);
@@ -83,10 +86,10 @@ var App = {
       this.states.car = objs.car.create();
 
       // WHILE TESTING
-      this.objs.form.els.type.selectedIndex = 1;
-      this.objs.form.els.color.selectedIndex = 1;
-      this.objs.form.els.speed.selectedIndex = 1;
-      this.objs.form.canSubmit() && this.objs.form.removeSubmitDisabled();
+      // this.objs.form.els.type.selectedIndex = 1;
+      // this.objs.form.els.color.selectedIndex = 1;
+      // this.objs.form.els.speed.selectedIndex = 1;
+      // this.objs.form.canSubmit() && this.objs.form.removeSubmitDisabled();
       // END TESTING
 
       this.states.car = App.getFormValues(this.objs.form, this.path.img); // bind selectedCar with form values
@@ -140,7 +143,7 @@ var App = {
         });
       });
     });
-    // form update
+    // form update event
     this.objs.form.els.update.addEventListener("click", () => {
       console.log(this.objs.form.els.type.value);
       if (this.objs.form.canSubmit()) {
@@ -153,7 +156,44 @@ var App = {
         selectedCar.boardImgEl.style.filter = this.objs.form.getColorFilterValue();
 
         this.objs.form.resetForm();
+        this.objs.preview.resetPreview();
       }
+    });
+    // form start event
+    this.objs.form.els.start.addEventListener("click", () => {
+      this.objs.form.hideForm();
+      this.els.appContainer.setAttribute("started", "");
+
+      var winners = [];
+      this.states.cars.forEach((car) => {
+        let carRect = car.boardContainerEl.getBoundingClientRect().right;
+        let intervalId = setInterval(() => {
+          let gameRect = this.els.gameSection.getBoundingClientRect().right - 20;
+          if (carRect >= gameRect) {
+            winners.push(car);
+            clearInterval(intervalId);
+            if (winners.length === 4) this.displayPodium(winners);
+          } else {
+            let currentLeft = parseInt(car.boardContainerEl.style.left || 0);
+            let newLeft = currentLeft + car.speed / 10;
+            car.boardContainerEl.style.left = newLeft + "px";
+            carRect = car.boardContainerEl.getBoundingClientRect().right; // Update carRect after moving the car
+          }
+        }, 25);
+      });
+    });
+  },
+  displayPodium(winners) {
+    // this.els.appContainer.removeAttribute("started");
+    this.els.appContainer.setAttribute("podium", "");
+    var title = document.createElement("h3");
+    this.els.podium.appendChild(title);
+    winners.forEach((winner, index) => {
+      title.textContent = "The winners are:";
+      var element = document.createElement("p");
+      element.className = "winners";
+      element.innerHTML = `${index + 1}. ${winner.type} ${winner.color}`;
+      this.els.podium.appendChild(element);
     });
   },
 };
@@ -178,9 +218,26 @@ App.createAppEle = function (domEl) {
   // create `game` section element
   var gameSection = document.createElement("section");
   gameSection.id = "game-section";
+  // create `game` section element
+  var podiumWrapper = document.createElement("div");
+  podiumWrapper.id = "podium-container";
+  var podium = document.createElement("div");
+  podium.id = "podium";
+  podiumWrapper.appendChild(podium);
+  // create `background` section element
+  var background = document.createElement("div");
+  background.id = "background";
+  var starting = document.createElement("div");
+  starting.id = "starting-grid";
+  var ending = document.createElement("div");
+  ending.id = "ending-grid";
+  background.appendChild(starting);
+  background.appendChild(ending);
   // generate elements
   domEl.appendChild(formSection);
   domEl.appendChild(gameSection);
+  domEl.appendChild(podiumWrapper);
+  domEl.appendChild(background);
   // assign created elements to App.els
-  return [domEl, formSection, gameSection];
+  return [domEl, formSection, gameSection, podium];
 };

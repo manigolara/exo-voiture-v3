@@ -4,7 +4,97 @@ button {
 }
 body {
   margin: 0;
+  font-family: "Arial", sans-serif;
   #container {
+    &[podium] {
+      #podium-container {
+        background-color: rgba(#000, 0.15);
+        position: absolute;
+        top: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        #podium {
+          background-color: #fff;
+          padding: 50px;
+
+          width: 20%;
+          height: 20%;
+          min-width: 200px;
+          max-width: 300px;
+          display: flex;
+          flex-direction: column;
+          .winners {
+            font-size: 1.2rem;
+            margin: 0.2rem;
+          }
+        }
+      }
+    }
+    &[started] {
+      #background {
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        position: absolute;
+        #starting-grid {
+          background-image: url(img/starting-grid.jpg);
+          background-repeat: no-repeat;
+          height: 100%;
+          width: 89px;
+          left: 25vh;
+          position: absolute;
+        }
+        #ending-grid {
+          background-image: url(img/starting-grid.jpg);
+          background-repeat: no-repeat;
+          height: 100%;
+          width: 235px;
+          right: 0;
+          position: absolute;
+        }
+      }
+      #form-section {
+        background-color: transparent;
+      }
+      #game-section {
+        #circuit-container {
+          #circuit {
+            .cars {
+              background-color: transparent;
+              border: none;
+            }
+            button {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+    &:not([started]) {
+      #form-section {
+        background-color: rgba(#000, 0.5);
+        #form-container {
+          background-color: rgba(#fff, 0.95);
+        }
+      }
+      #game-section {
+        #circuit-container {
+          #circuit {
+            .cars {
+              background-color: #eee;
+              border: 1px solid black;
+            }
+            button {
+              display: "initial";
+            }
+          }
+        }
+      }
+    }
     position: relative;
     height: 100vh;
     justify-content: center;
@@ -17,10 +107,9 @@ body {
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: rgba(#000, 0.5);
+
       #form-container {
         padding: 50px;
-        background-color: rgba(#fff, 0.95);
 
         width: 60%;
         height: 60%;
@@ -46,11 +135,12 @@ body {
           display: flex;
           justify-content: center;
           align-items: center;
-
+          box-sizing: border-box;
           img {
             display: flex;
             object-fit: contain;
             max-height: 80%;
+            box-sizing: border-box;
           }
         }
       }
@@ -73,14 +163,14 @@ body {
             // width: 400%;
             position: relative;
             // display: flex;
-            background-color: #eee;
+
             padding: 1rem;
 
             flex: 1; /* Take remaining height */
             display: flex;
             justify-content: center; /* Center horizontally */
             align-items: center; /* Center vertically */
-            border: 1px solid black;
+
             img {
               width: 20vh;
               display: flex;

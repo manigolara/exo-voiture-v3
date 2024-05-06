@@ -5,6 +5,7 @@ var Preview = {
    */
   els: {
     container: null,
+    imgEl: null,
   },
   /**
    * Public functions
@@ -18,6 +19,9 @@ var Preview = {
     this.els.container.innerHTML = "";
     car.type && Preview.generateImgEl(this.els.container, car);
   },
+  resetPreview: function () {
+    this.els.container.innerHTML = "";
+  },
 };
 
 /**
@@ -29,4 +33,5 @@ Preview.generateImgEl = function (domEl, car) {
   imgEl.src = car.imgPath;
   imgEl.style.filter = car.colorFilter;
   domEl.appendChild(imgEl);
+  return imgEl;
 };
