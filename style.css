@@ -1,0 +1,91 @@
+select,
+button {
+  font-size: 1.2rem;
+}
+
+body {
+  margin: 0;
+}
+body #container {
+  position: relative;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+body #container #form-section {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+body #container #form-section #form-container {
+  padding: 50px;
+  background-color: rgba(255, 255, 255, 0.95);
+  width: 60%;
+  height: 60%;
+  min-width: 600px;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+}
+body #container #form-section #form-container #form {
+  display: flex;
+  flex-direction: row;
+}
+body #container #form-section #form-container #form select {
+  flex-grow: 1;
+}
+body #container #form-section #form-container #form button {
+  flex-grow: 1;
+  min-width: 5rem;
+  background-color: #eee;
+}
+body #container #form-section #form-container #preview {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body #container #form-section #form-container #preview img {
+  display: flex;
+  -o-object-fit: contain;
+     object-fit: contain;
+  max-height: 80%;
+}
+body #container #game-section {
+  height: 100%;
+}
+body #container #game-section #circuit-container {
+  height: 100%;
+  display: flex;
+  align-items: center; /* Center vertically */
+}
+body #container #game-section #circuit-container #circuit {
+  height: 60%;
+  position: relative;
+}
+body #container #game-section #circuit-container #circuit .cars {
+  position: relative;
+  background-color: #eee;
+  padding: 1rem;
+  flex: 1; /* Take remaining height */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  border: 1px solid black;
+}
+body #container #game-section #circuit-container #circuit .cars img {
+  width: 20vh;
+  display: flex;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+body #container #game-section #circuit-container #circuit .cars button {
+  position: absolute;
+  right: 0;
+  top: 0;
+}/*# sourceMappingURL=style.css.map */
