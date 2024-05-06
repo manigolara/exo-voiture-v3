@@ -15,6 +15,7 @@ var Board = {
    * ---------------------------------------------
    */
   create: function (domElement, cars) {
+    this.states.cars = cars;
     this.els.container = domElement;
     this.states.cars = cars;
     this.els.circuit = Board.createCircuitEle(this.els.container);
@@ -25,6 +26,9 @@ var Board = {
     this.states.cars.push(car);
     // console.log(this.states.cars);
     Board.generateCars(this.states.cars, this.els.circuit);
+  },
+  canStart: function () {
+    return this.states.cars.length === 4;
   },
 };
 /**
@@ -42,28 +46,37 @@ Board.createCircuitEle = function (domEl) {
   return circuit;
 };
 
-Board.generateCars = (cars, circuit) => {
+Board.generateCars = function (cars, circuit) {
   circuit.innerHTML = "";
 
-  var offset = 5;
+  const offset = 5;
+
   cars.forEach((car, index) => {
-    var imgElement = document.createElement("img");
-    imgElement.src = car.imgPath;
-    imgElement.style.filter = car.colorFilter;
-    var wrapperElement = document.createElement("div");
-    wrapperElement.className = "cars";
-    wrapperElement.style.zIndex = 2;
-    var deleteButton = document.createElement("button");
-    deleteButton.textContent = "x";
-    deleteButton.style.zIndex = 3;
-    wrapperElement.style.top = offset * index + "vh";
-    //   wrapperElement.addEventListener("click", (event) => {
-    //     this.eventsCallback.click(event);
-    //   });
-    wrapperElement.appendChild(imgElement);
-    wrapperElement.appendChild(deleteButton);
-    circuit.appendChild(wrapperElement);
-    return wrapperElement;
+    var [wrapperElement, imgElement] = Board.generateCar(car);
+    wrapperElement.style.top = `${offset * index}vh`;
   });
-  // console.log(cars);
+};
+
+Board.generateCar = function (car) {
+  const imgElement = document.createElement("img");
+  imgElement.src = car.imgPath;
+  imgElement.style.filter = car.colorFilter;
+
+  const wrapperElement = document.createElement("div");
+  wrapperElement.className = "cars";
+  wrapperElement.style.zIndex = 2;
+
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "x";
+  deleteButton.style.zIndex = 3;
+
+  car.boardContainerEl = wrapperElement;
+  car.boardImgEl = imgElement;
+
+  // append
+  wrapperElement.appendChild(imgElement);
+  wrapperElement.appendChild(deleteButton);
+  circuit.appendChild(wrapperElement);
+
+  return [wrapperElement, imgElement];
 };

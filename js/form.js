@@ -12,6 +12,7 @@ var Form = {
     color: null,
     speed: null,
     submit: null,
+    update: null,
     start: null,
   },
   // events: {
@@ -28,7 +29,7 @@ var Form = {
     this.els.type = Form.generateTypeSelectEl(this.els.form, data.type);
     this.els.color = Form.generateColorSelectEl(this.els.form, data.color);
     this.els.speed = Form.generateSpeedSelectEl(this.els.form, data.speed);
-    this.els.submit = Form.generateSubmitEl(this.els.form);
+    [this.els.submit, this.els.update] = Form.generateSubmitEl(this.els.form);
 
     return Object.create(this);
   },
@@ -64,6 +65,18 @@ var Form = {
     this.els.color.selectedIndex = 0;
     this.els.speed.selectedIndex = 0;
     this.setSubmitDisabled();
+    Form.hideButton(this.els.update);
+    Form.displayButton(this.els.submit);
+  },
+  displayStartEl() {
+    this.els.start.style.display = "initial";
+  },
+  updateForm(car) {
+    this.els.type.value = car.type;
+    this.els.color.value = car.color;
+    this.els.speed.value = car.speed;
+    Form.hideButton(this.els.submit);
+    Form.displayButton(this.els.update);
   },
 };
 
@@ -159,14 +172,26 @@ Form.generatePlaceholderOption = function (selectEl, text) {
 };
 
 Form.generateSubmitEl = function (domEl) {
-  var button = document.createElement("button");
-  button.textContent = "Ajouter";
-  button.setAttribute("disabled", "disabled");
-  button.type = "button";
-  domEl.appendChild(button);
-  return button;
+  var submit = document.createElement("button");
+  submit.textContent = "Ajouter";
+  submit.setAttribute("disabled", "disabled");
+  submit.type = "button";
+  var update = document.createElement("button");
+  update.textContent = "Modifier";
+  update.type = "button";
+  update.style.display = "none";
+  domEl.appendChild(submit);
+  domEl.appendChild(update);
+  return [submit, update];
 };
 
 Form.generateFilterColor = function (colorItem) {
   return `invert(${colorItem["invert"]}%) sepia(${colorItem["sepia"]}%) saturate(${colorItem["saturate"]}%) hue-rotate(${colorItem["hue"]}deg) brightness(${colorItem["brightness"]}%) contrast(${colorItem["contrast"]}%)`;
+};
+
+Form.hideButton = function (domEl) {
+  domEl.style.display = "none";
+};
+Form.displayButton = function (domEl) {
+  domEl.style.display = "initial";
 };

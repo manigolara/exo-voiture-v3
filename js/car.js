@@ -14,6 +14,8 @@ var Car = {
     this.speed = null;
     this.imgPath = null;
     this.boardTop = null;
+    this.boardContainerEl = null;
+    this.boardImgEl = null;
     return Object.create(this);
   },
 };
