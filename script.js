@@ -1,5 +1,5 @@
 window.onload = function () {
-  App.run({
+  App.init({
     appId: "container",
     data: {type: CarTypeList, color: CarColorList, speed: CarSpeedList},
     objs: {car: Car, form: Form, preview: Preview, board: Board},
@@ -14,15 +14,21 @@ var App = {
   states: {
     car: null,
     cars: [],
+    winners: [],
   },
   objs: {
+    car: null,
     form: null,
+    preview: null,
+    board: null,
   },
   els: {
     appContainer: null,
     formSection: null,
     gameSection: null,
     podium: null,
+    countdownContainer: null,
+    countdown: null,
   },
   data: {
     type: null,
@@ -36,12 +42,17 @@ var App = {
    * Public functions
    * ---------------------------------------------
    */
-  run: function ({appId, data, objs}) {
+  init: function ({appId, data, objs}) {
     // generate app dom element
     this.els.appContainer = document.getElementById(appId, data);
-    [this.els.appContainer, this.els.formSection, this.els.gameSection, this.els.podium] = App.createAppEle(
-      this.els.appContainer
-    );
+    [
+      this.els.appContainer,
+      this.els.formSection,
+      this.els.gameSection,
+      this.els.podium,
+      this.els.countdownContainer,
+      this.els.countdown,
+    ] = App.createAppEle(this.els.appContainer);
     // store json data
     this.data.type = data.type;
     this.data.color = data.color;
@@ -112,7 +123,6 @@ var App = {
         });
         // car mouseout event
         car.boardContainerEl.addEventListener("mouseout", function (event) {
-          console.log("hover");
           car.boardContainerEl.style.transform = null;
           event.stopPropagation();
         });
@@ -157,38 +167,54 @@ var App = {
 
         this.objs.form.resetForm();
         this.objs.preview.resetPreview();
+        selectedCar.boardContainerEl.style.border = "none";
       }
     });
     // form start event
     this.objs.form.els.start.addEventListener("click", () => {
       this.objs.form.hideForm();
       this.els.appContainer.setAttribute("started", "");
+      this.els.countdownContainer.style.display = "flex";
 
-      var winners = [];
-      this.states.cars.forEach((car) => {
-        let carRect = car.boardContainerEl.getBoundingClientRect().right;
-        let intervalId = setInterval(() => {
-          let gameRect = this.els.gameSection.getBoundingClientRect().right - 20;
-          if (carRect >= gameRect) {
-            winners.push(car);
-            clearInterval(intervalId);
-            if (winners.length === 4) this.displayPodium(winners);
-          } else {
-            let currentLeft = parseInt(car.boardContainerEl.style.left || 0);
-            let newLeft = currentLeft + car.speed / 10;
-            car.boardContainerEl.style.left = newLeft + "px";
-            carRect = car.boardContainerEl.getBoundingClientRect().right; // Update carRect after moving the car
-          }
-        }, 25);
-      });
+      var countdown = 3;
+      var interval = setInterval(() => {
+        this.els.countdown.innerHTML = countdown;
+        if (countdown === 0) {
+          clearInterval(interval);
+          this.els.countdownContainer.style.display = "none";
+
+          this.startGame();
+        }
+        countdown--;
+      }, 1000);
     });
   },
-  displayPodium(winners) {
+
+  startGame: function () {
+    this.states.cars.forEach((car) => {
+      let carRect = car.boardContainerEl.getBoundingClientRect().right;
+      let interval = setInterval(() => {
+        let gameRect = this.els.gameSection.getBoundingClientRect().right - 20;
+        if (carRect >= gameRect) {
+          clearInterval(interval);
+          this.states.winners.push(car);
+          car.boardContainerEl.style.right = "10px"; // to have them properly aligned at finish position
+          if (this.states.winners.length === 4) this.displayPodium();
+        } else {
+          let currentLeft = parseInt(car.boardContainerEl.style.left || 0);
+          let newLeft = currentLeft + car.speed / 10;
+          car.boardContainerEl.style.left = newLeft + "px";
+          carRect = car.boardContainerEl.getBoundingClientRect().right; // Update carRect after moving the car
+        }
+      }, 25);
+    });
+  },
+  displayPodium() {
     // this.els.appContainer.removeAttribute("started");
     this.els.appContainer.setAttribute("podium", "");
     var title = document.createElement("h3");
     this.els.podium.appendChild(title);
-    winners.forEach((winner, index) => {
+    this.states.winners.forEach((winner, index) => {
       title.textContent = "The winners are:";
       var element = document.createElement("p");
       element.className = "winners";
@@ -218,7 +244,14 @@ App.createAppEle = function (domEl) {
   // create `game` section element
   var gameSection = document.createElement("section");
   gameSection.id = "game-section";
-  // create `game` section element
+  // create `countdown` section element
+  var countdownWrapper = document.createElement("div");
+  countdownWrapper.id = "countdown-container";
+  countdownWrapper.style.display = "none";
+  var countdown = document.createElement("div");
+  countdown.id = "countdown";
+  countdownWrapper.appendChild(countdown);
+  // create `podium` section element
   var podiumWrapper = document.createElement("div");
   podiumWrapper.id = "podium-container";
   var podium = document.createElement("div");
@@ -236,8 +269,9 @@ App.createAppEle = function (domEl) {
   // generate elements
   domEl.appendChild(formSection);
   domEl.appendChild(gameSection);
+  domEl.appendChild(countdownWrapper);
   domEl.appendChild(podiumWrapper);
   domEl.appendChild(background);
   // assign created elements to App.els
-  return [domEl, formSection, gameSection, podium];
+  return [domEl, formSection, gameSection, podium, countdownWrapper, countdown];
 };

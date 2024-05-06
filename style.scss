@@ -2,6 +2,34 @@ select,
 button {
   font-size: 1.2rem;
 }
+
+#countdown-container {
+  background-color: rgba(#000, 0.15);
+  position: absolute;
+  top: 0;
+  // z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  #countdown {
+    background-color: #fff;
+    width: 20%;
+    height: 20%;
+    min-width: 200px;
+    max-width: 300px;
+    display: flex;
+    z-index: 1;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    font-weight: 600;
+    // color: red;
+  }
+}
+
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
@@ -25,8 +53,8 @@ body {
           height: 20%;
           min-width: 200px;
           max-width: 300px;
-          display: flex;
-          flex-direction: column;
+          // display: flex;
+          // flex-direction: column;
           .winners {
             font-size: 1.2rem;
             margin: 0.2rem;

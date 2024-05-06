@@ -47,4 +47,28 @@ var CarColorList = [
       contrast: 106,
     },
   },
+  {
+    name: "pink",
+    "name-fr": "Rose",
+    "color-filter": {
+      invert: 20,
+      sepia: 97,
+      saturate: 2480,
+      hue: 290,
+      brightness: 100,
+      contrast: 140,
+    },
+  },
+  {
+    name: "orange",
+    "name-fr": "Orange",
+    "color-filter": {
+      invert: 64,
+      sepia: 70,
+      saturate: 4576,
+      hue: 360,
+      brightness: 100,
+      contrast: 100,
+    },
+  },
 ];

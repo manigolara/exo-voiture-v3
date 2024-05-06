@@ -3,6 +3,30 @@ button {
   font-size: 1.2rem;
 }
 
+#countdown-container {
+  background-color: rgba(0, 0, 0, 0.15);
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#countdown-container #countdown {
+  background-color: #fff;
+  width: 20%;
+  height: 20%;
+  min-width: 200px;
+  max-width: 300px;
+  display: flex;
+  z-index: 1;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  font-weight: 600;
+}
+
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
@@ -31,8 +55,6 @@ body #container[podium] #podium-container #podium {
   height: 20%;
   min-width: 200px;
   max-width: 300px;
-  display: flex;
-  flex-direction: column;
 }
 body #container[podium] #podium-container #podium .winners {
   font-size: 1.2rem;
