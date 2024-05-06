@@ -16,6 +16,7 @@ var Car = {
     this.boardTop = null;
     this.boardContainerEl = null;
     this.boardImgEl = null;
+    this.deleteEl = null;
     return Object.create(this);
   },
 };

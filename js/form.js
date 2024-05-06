@@ -60,6 +60,9 @@ var Form = {
   setSubmitDisabled() {
     this.els.submit.setAttribute("disabled", "");
   },
+  removeSubmitDisabled() {
+    this.els.submit.removeAttribute("disabled");
+  },
   resetForm() {
     this.els.type.selectedIndex = 0;
     this.els.color.selectedIndex = 0;
@@ -67,6 +70,9 @@ var Form = {
     this.setSubmitDisabled();
     Form.hideButton(this.els.update);
     Form.displayButton(this.els.submit);
+  },
+  hideStartEl() {
+    this.els.start.style.display = "none";
   },
   displayStartEl() {
     this.els.start.style.display = "initial";

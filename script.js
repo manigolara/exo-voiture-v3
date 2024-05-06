@@ -102,15 +102,18 @@ var App = {
 
       // cars events
       this.states.cars.forEach(function (car) {
+        // car mouseover event
         car.boardContainerEl.addEventListener("mouseover", (event) => {
           car.boardContainerEl.style.transform = "scale(1.05)";
           event.stopPropagation();
         });
+        // car mouseout event
         car.boardContainerEl.addEventListener("mouseout", function (event) {
           console.log("hover");
           car.boardContainerEl.style.transform = null;
           event.stopPropagation();
         });
+        // car click event
         var selected = car;
         car.boardContainerEl.addEventListener("click", function (event) {
           // Remove the red border from the previously selected car
@@ -124,6 +127,15 @@ var App = {
           // Set preview and form to selected car
           self.objs.form.updateForm(car);
           self.objs.preview.display(selectedCar); // display current car
+          event.stopPropagation();
+        });
+        // car delete event
+        // car delete event
+        car.deleteEl.addEventListener("click", function (event) {
+          // Remove the car from the board
+          self.objs.board.removeCar(car);
+          self.objs.form.removeSubmitDisabled();
+          self.objs.form.hideStartEl();
           event.stopPropagation();
         });
       });

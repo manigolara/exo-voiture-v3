@@ -30,6 +30,13 @@ var Board = {
   canStart: function () {
     return this.states.cars.length === 4;
   },
+  removeCar: function (carToRemove) {
+    const index = this.states.cars.indexOf(carToRemove);
+    if (index !== -1) {
+      this.states.cars.splice(index, 1);
+    }
+    Board.generateCars(this.states.cars, this.els.circuit);
+  },
 };
 /**
  * Private functions
@@ -72,6 +79,7 @@ Board.generateCar = function (car) {
 
   car.boardContainerEl = wrapperElement;
   car.boardImgEl = imgElement;
+  car.deleteEl = deleteButton;
 
   // append
   wrapperElement.appendChild(imgElement);
